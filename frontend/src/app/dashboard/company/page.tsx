@@ -24,13 +24,13 @@ const PRESET_ACCENT_COLORS = [
 ];
 
 function resolveMediaUrl(url?: string | null, filePath?: string | null): string | null {
+  if (filePath) {
+    return `${BACKEND_URL}/storage/${filePath.replace(/^\/+/, '')}`;
+  }
   if (url) {
     return url.startsWith('http')
       ? url
       : `${BACKEND_URL}${url.startsWith('/') ? url : `/${url}`}`;
-  }
-  if (filePath) {
-    return `${BACKEND_URL}/storage/${filePath.replace(/^\/+/, '')}`;
   }
   return null;
 }

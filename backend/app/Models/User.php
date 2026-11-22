@@ -30,6 +30,8 @@ class User extends Authenticatable
         'account_type',
         'company_name',
         'status',
+        'is_active',
+        'last_seen_at',
     ];
 
     protected $hidden = [
@@ -44,6 +46,8 @@ class User extends Authenticatable
             'role' => UserRole::class,
             'account_type' => AccountType::class,
             'status' => UserStatus::class,
+            'is_active' => 'boolean',
+            'last_seen_at' => 'datetime',
         ];
     }
 
@@ -54,7 +58,7 @@ class User extends Authenticatable
 
     public function isActive(): bool
     {
-        return $this->status === UserStatus::Active;
+        return $this->status === UserStatus::Active && ($this->is_active ?? true);
     }
 
     public function properties(): HasMany

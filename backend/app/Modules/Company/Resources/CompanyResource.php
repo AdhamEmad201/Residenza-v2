@@ -31,6 +31,7 @@ class CompanyResource extends JsonResource
             'accent_color' => $this->accent_color ?: '#9F7753',
             'is_verified' => (bool) $this->is_verified,
             'properties_count' => $this->when(isset($this->properties_count), (int) $this->properties_count),
+            'projects_count' => $this->when(isset($this->projects_count), (int) $this->projects_count),
             'projects' => $this->whenLoaded('projects', fn () => ProjectResource::collection($this->projects)),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),

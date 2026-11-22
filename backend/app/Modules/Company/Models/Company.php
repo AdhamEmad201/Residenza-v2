@@ -51,6 +51,11 @@ class Company extends Model
     {
         return [
             'is_verified' => 'boolean',
+            'max_properties' => 'integer',
+            'plan_expires_at' => 'datetime',
+            'views_count' => 'integer',
+            'whatsapp_clicks' => 'integer',
+            'phone_clicks' => 'integer',
         ];
     }
 

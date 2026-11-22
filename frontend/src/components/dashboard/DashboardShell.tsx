@@ -27,11 +27,14 @@ const PORTAL_NAV: NavItem[] = [
 ];
 
 const ADMIN_NAV: NavItem[] = [
-  { href: '/admin', label: 'مركز القيادة والإحصائيات', exact: true },
-  { href: '/admin/properties', label: 'طابور المراجعة والعقارات' },
+  { href: '/admin', label: 'غرفة التحكم والنبض الحي', exact: true },
+  { href: '/admin/properties', label: 'مراجعة العقارات والتنبيهات' },
+  { href: '/admin/companies', label: 'الشركات والباقات والتوثيق' },
+  { href: '/admin/users', label: 'إدارة الحسابات والصلاحيات' },
+  { href: '/admin/leads-reports', label: 'طلبات المشترين والبلاغات' },
+  { href: '/admin/settings', label: 'المناطق والبانر وسجل النشاط' },
+  { href: '/admin/taxonomy', label: 'شجرة التصنيفات والمواقع' },
   { href: '/admin/properties/new', label: 'نشر عقار مباشر (OD-01)' },
-  { href: '/admin/users', label: 'إدارة المستخدمين والمعلنين' },
-  { href: '/admin/taxonomy', label: 'التصنيفات ومناطق سوهاج' },
 ];
 
 export function DashboardShell({ mode, children }: DashboardShellProps) {
@@ -42,12 +45,14 @@ export function DashboardShell({ mode, children }: DashboardShellProps) {
 
   useEffect(() => {
     if (isLoading) return;
-    if (!isAuthenticated || !user) {
-      router.replace(`/login?redirect=${encodeURIComponent(pathname || '/')}`);
+    if (mode === 'admin') {
+      if (!isAuthenticated || !user || user.role !== 'admin') {
+        router.replace('/');
+      }
       return;
     }
-    if (mode === 'admin' && user.role !== 'admin') {
-      router.replace('/portal');
+    if (!isAuthenticated || !user) {
+      router.replace(`/login?redirect=${encodeURIComponent(pathname || '/')}`);
     }
   }, [isLoading, isAuthenticated, user, mode, pathname, router]);
 

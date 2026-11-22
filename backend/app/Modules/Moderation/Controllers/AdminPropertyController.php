@@ -45,6 +45,18 @@ class AdminPropertyController extends Controller
             $query->where('moderation_status', $modStatus);
         }
 
+        if (is_string($statusFilter = $request->query('status')) && $statusFilter !== '') {
+            match ($statusFilter) {
+                'pending', 'pending_review' => $query->whereIn('moderation_status', [ModerationStatus::PendingReview->value, 'pending']),
+                'approved' => $query->where('moderation_status', ModerationStatus::Approved->value),
+                'rejected' => $query->where('moderation_status', ModerationStatus::Rejected->value),
+                'stale' => $query->where('moderation_status', ModerationStatus::Approved->value)
+                    ->where('availability_status', AvailabilityStatus::Available->value)
+                    ->where('created_at', '<=', now()->subDays(45)),
+                default => null,
+            };
+        }
+
         if (is_string($availStatus = $request->query('availability_status')) && AvailabilityStatus::tryFrom($availStatus) !== null) {
             $query->where('availability_status', $availStatus);
         }

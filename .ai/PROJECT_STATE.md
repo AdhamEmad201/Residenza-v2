@@ -1,8 +1,8 @@
 # RESIDENZA — PROJECT STATE
 
 > **Document Role**: Live tracker of project phase, Foundation Quality Gate verification, completed milestones, pending tasks, and documented assumptions.  
-> **Current Stage**: MVP COMPLETE — `FND-01`–`FND-04`, `DOM-01`, `DOM-02`, `UI-01`, `UI-02` — **`ALL PHASES APPROVED & COMPLETE`** (Date: 2026-11-16 | PostgreSQL triggers/DDL remain **`UNVERIFIED ON LIVE POSTGRESQL`**)  
-> **Last Updated**: 2026-11-16  
+> **Current Stage**: RESIDENZA `v2.2` COMPLETE — `FND-01`–`FND-04`, `DOM-01`, `DOM-02`, `UI-01`, `UI-02`, `v2.1` (Agency Storefronts & Companies Directory), `v2.2` (Admin Control Room & Business Analytics) — **`ALL PHASES APPROVED & COMPLETE`** (Date: 2026-11-22)  
+> **Last Updated**: 2026-11-22  
 
 ---
 
@@ -118,4 +118,28 @@ Per Architectural Quality Gate rules, no item is marked complete without live ex
 - **UI-01 (Phase 5)**: **`APPROVED`** (Date: `2026-11-16` | Warm Living Luxury & Organic Motion design direction signed off by Product Owner | Strict 26-file scope in `frontend/src/` | Independent Audit & Deep Spec Review Verdict: **`PASS`** (`0` critical/high/medium defects) | `tsc --noEmit`: `0 errors`, Static RTL Logical CSS test: `PASS` (`0` violations) | `UD-02 = B` dual cash/installment pricing & `OD-05 = A` down payment breakdown, `D-11` `"معتمد للنشر"` terminology, SSR `cache: 'no-store'` public fetches, Sanctum SPA Cookie `AuthContext` | PostgreSQL triggers/DDL remain **`UNVERIFIED ON LIVE POSTGRESQL`**)
 - **UI-02 (Phase 6)**: **`APPROVED`** (Date: `2026-11-16` | Independent Read-Only Architectural, Security & Spec Audit Verdict: **`PASS — READY FOR FINAL PRODUCT OWNER ACCEPTANCE`** [0 defects] | Strict 19-file scope in `frontend/src/` | `portal.ts` & `admin.ts` API modules, `DashboardShell`, `StatusBadges` & `ModerationTimeline`, `PropertyForm` enforcing `UD-02 = B` & `OD-05 = A`, `MediaAndDocumentsManager` with private document vault streaming `/api/v1/documents/{id}/download`, `ModerationActionPanel` with Self-Approval Guard, 5 `(portal)` routes and 7 `(admin)` routes including `OD-01 = A` direct publish and Self-Suspension Guard | `tsc --noEmit`: `0 errors`, Static RTL Logical CSS test: `PASS` (`0` violations) | PostgreSQL triggers/DDL remain **`UNVERIFIED ON LIVE POSTGRESQL`**)
 - **Full RESIDENZA v2 MVP Application Scope (`FND-01` through `UI-02`)**: **`ALL PHASES APPROVED & COMPLETE`** (Date: `2026-11-16` | Operational Deployment Note: PostgreSQL-specific triggers/DDL remain **`UNVERIFIED ON LIVE POSTGRESQL`** until production PostgreSQL provisioning).
+
+---
+
+## 4. RESIDENZA v2.1 & v2.2 Post-MVP Releases
+
+### 4.1 v2.1 — Official SVG Branding, Agency Storefronts & Companies Directory (Completed 2026-11-22)
+- [x] **Official RESIDENZA SVG Identity & Palette**: Integrated official vector logos (`/images/residenza-logo.svg`, `/images/residenza-icon.svg`, `src/app/icon.svg`) and harmonized UI tokens (`#403E3D` Charcoal, `#9F7753` Metallic Bronze, `#CEB38F` Sand Gold, `#F3EAD8` Warm Ivory).
+- [x] **Agency Storefronts Backend (`companies` & `projects`)**: PostgreSQL-safe migrations, `Company` & `Project` models, `GET /api/v1/companies`, `GET /api/v1/companies/{slug}`, and authenticated `/api/v1/my-company` + `/api/v1/my-company/projects` with strict `finfo` magic-byte image validation (blocking SVG uploads and `is_verified` mass-assignment).
+- [x] **Public Companies & Developers Directory (`/companies`)**: Searchable RTL directory (`frontend/src/app/companies/page.tsx`) with verified filter, connected in main `Header.tsx`, `Footer.tsx`, and the Home page (`frontend/src/app/page.tsx`).
+- [x] **Public Agency Storefront (`/companies/[slug]`) & Dashboard (`/dashboard/company`)**: Scoped company listings, compounds/projects tab, marketplace `PropertyCard` agency badge, and live branding preview dashboard.
+- [x] **Same-Origin Proxy & Security Hardening**: Configured Next.js `rewrites()` for `/api/*`, `/sanctum/*`, `/storage/*` and Laravel `trustProxies(at: '*')` to eliminate cross-site `419` CSRF issues on localhost and Cloudflare Tunnels.
+
+### 4.2 v2.2 — Protected Admin Control Room & Business Analytics (Completed 2026-11-22)
+- [x] **Admin Control Room Schema & Quotas**: Added `users.last_seen_at`, `users.is_active`, `companies.plan_tier`, `companies.max_properties`, `companies.plan_expires_at`, engagement click counters (`views_count`, `whatsapp_clicks`, `phone_clicks`), and tables `admin_audit_logs`, `areas` (seeded with default Sohag neighborhoods), `property_reports`, `buyer_requests`, and `site_settings`.
+- [x] **Public Engagement & Intake Hooks**: Dismissible top `AnnouncementBar`, non-blocking click tracking (`POST /api/v1/track/click`), property report modal (`POST /api/v1/properties/{id}/report`), and **"اطلب عقارك"** buyer request lead form (`POST /api/v1/buyer-requests`).
+- [x] **Protected Admin Control Room UI (`/admin/*`)**:
+  - [x] `/admin` — Live online presence pulse (`last_seen_at` within 5 minutes), 6 KPI cards, quick pending queue, and top Sohag areas demand breakdown.
+  - [x] `/admin/properties` — Moderation tabs (`pending`, `approved`, `rejected`, `stale` +45 days) with smart `is_potential_duplicate` & `is_suspicious_price` badges, 1-click approve/reject/feature, WhatsApp template, and CSV export.
+  - [x] `/admin/companies` — Partner verification toggle (`is_verified`), plan tier & `max_properties` quota editor, engagement stats, and CSV export.
+  - [x] `/admin/users` — Online/offline status dot, admin role promotion/demotion (with self-demotion guard), account activation/suspension (with self-ban guard), WhatsApp link, and CSV export.
+  - [x] `/admin/leads-reports` — Buyer requests routing to companies + visitor property reports resolution.
+  - [x] `/admin/settings` — Dynamic Sohag areas manager, announcement bar & hero banner editor (blocking SVG uploads), and paginated Admin Audit Log table.
+- [x] **Artisan Command & Verification**: Added `php artisan residenza:make-admin {email}`; verified `57 passed (497 assertions)` in PHPUnit, `0 errors` in `tsc --noEmit`, and `3/3 PASS` in `verify-foundation.mjs`.
+
 - **Total Authorized Files in FND-04**: Exactly 19 files. Zero files outside this boundary were touched.

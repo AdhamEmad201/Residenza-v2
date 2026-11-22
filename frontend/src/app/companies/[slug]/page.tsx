@@ -10,6 +10,7 @@ import { BACKEND_URL } from '@/lib/api/client';
 import {
   getPublicCompanyStorefront,
   PROPERTY_TYPE_LABELS,
+  trackPublicClick,
   TRANSACTION_LABELS,
 } from '@/lib/api/public';
 import type { AvailabilityStatus, PropertyType, TransactionType } from '@/types/api';
@@ -25,13 +26,13 @@ const AVAILABILITY_LABELS: Record<AvailabilityStatus, string> = {
 };
 
 function resolveMediaUrl(url?: string | null, filePath?: string | null): string | null {
+  if (filePath) {
+    return `${BACKEND_URL}/storage/${filePath.replace(/^\/+/, '')}`;
+  }
   if (url) {
     return url.startsWith('http')
       ? url
       : `${BACKEND_URL}${url.startsWith('/') ? url : `/${url}`}`;
-  }
-  if (filePath) {
-    return `${BACKEND_URL}/storage/${filePath.replace(/^\/+/, '')}`;
   }
   return null;
 }
@@ -83,6 +84,11 @@ export default function CompanyStorefrontPage() {
       } else {
         setStorefront(data);
         setNotFoundError(false);
+        trackPublicClick({
+          type: 'view',
+          target_type: 'company',
+          id: data.company.id,
+        });
       }
       setIsLoading(false);
     }
@@ -349,6 +355,13 @@ export default function CompanyStorefrontPage() {
                     href={whatsappHref}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() =>
+                      trackPublicClick({
+                        type: 'whatsapp',
+                        target_type: 'company',
+                        id: company.id,
+                      })
+                    }
                     className="inline-flex items-center gap-2 rounded-full bg-[#136F48] px-5 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#0F5939]"
                   >
                     <span>تواصل واتساب مباشر</span>
@@ -358,6 +371,13 @@ export default function CompanyStorefrontPage() {
                 {telHref && company.phone && (
                   <a
                     href={telHref}
+                    onClick={() =>
+                      trackPublicClick({
+                        type: 'phone',
+                        target_type: 'company',
+                        id: company.id,
+                      })
+                    }
                     className="inline-flex items-center gap-2 rounded-full bg-[#403E3D] px-5 py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#2F2D2C]"
                   >
                     <span>اتصال هاتفي</span>

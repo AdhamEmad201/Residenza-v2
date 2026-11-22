@@ -11,6 +11,7 @@ import { ACCOUNT_TYPE_LABELS } from '@/lib/api/public';
 const NAV_ITEMS = [
   { href: '/', label: 'الرئيسية' },
   { href: '/properties', label: 'العقارات' },
+  { href: '/companies', label: 'الشركات والمطورون' },
   { href: '/categories', label: 'التصنيفات' },
   { href: '/locations', label: 'وجهات سوهاج' },
   { href: '/about', label: 'عن ريزيدنزا' },
@@ -220,6 +221,15 @@ export function Header() {
                     </p>
                   </div>
                   <div className="grid grid-cols-2 gap-2.5">
+                    {user.role === 'admin' && (
+                      <Link
+                        href="/admin"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="col-span-2 rounded-full bg-[#9F7753] py-3 text-center text-xs font-bold text-white"
+                      >
+                        لوحة الإدارة
+                      </Link>
+                    )}
                     <Link
                       href="/portal"
                       onClick={() => setMobileMenuOpen(false)}

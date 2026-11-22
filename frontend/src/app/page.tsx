@@ -3,11 +3,14 @@ import Link from 'next/link';
 import { Container } from '@/components/layout/Container';
 import {
   getPublicCategories,
+  getPublicCompanies,
   getPublicLocations,
   getPublicProperties,
   PROPERTY_TYPE_LABELS,
 } from '@/lib/api/public';
+import { BACKEND_URL } from '@/lib/api/client';
 import { PropertyCard } from '@/components/marketplace/PropertyCard';
+import { BuyerRequestBanner } from '@/components/marketplace/BuyerRequestModal';
 import { EmptyState } from '@/components/ui/EmptyState';
 
 export const dynamic = 'force-dynamic';
@@ -24,10 +27,11 @@ const DESTINATION_IMAGES = [
 ];
 
 export default async function HomePage() {
-  const [propertiesResult, categories, locationRoots] = await Promise.all([
+  const [propertiesResult, categories, locationRoots, companies] = await Promise.all([
     getPublicProperties({ per_page: 6, sort: 'newest' }),
     getPublicCategories(),
     getPublicLocations(),
+    getPublicCompanies({ per_page: 6 }),
   ]);
 
   const sohagRoot = locationRoots[0];
@@ -248,6 +252,148 @@ export default async function HomePage() {
                 actionLabel="أضف عقارك للمراجعة"
                 actionHref="/register"
               />
+            )}
+          </div>
+
+          <div className="mt-10">
+            <BuyerRequestBanner />
+          </div>
+        </Container>
+      </section>
+
+      {/* Featured Developers & Real Estate Agencies Showcase */}
+      <section className="section-contain">
+        <Container>
+          <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
+              <span className="inline-block rounded-full bg-[#F3EAD8] px-3.5 py-1 text-xs font-bold text-[#9F7753]">
+                المطورون والوكالات العقارية
+              </span>
+              <h2 className="mt-3 text-3xl font-extrabold tracking-tight text-[#403E3D] sm:text-4xl">
+                شركاء التطوير العقاري والمكاتب المعتمدة
+              </h2>
+            </div>
+
+            <Link
+              href="/companies"
+              className="rounded-full bg-[#403E3D] px-6 py-3 text-xs font-bold text-white shadow-sm transition-all hover:bg-[#9F7753] active:scale-[0.98]"
+            >
+              عرض كل الشركات &#8592;
+            </Link>
+          </div>
+
+          <div className="mt-10">
+            {companies.length > 0 ? (
+              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                {companies.map((company) => {
+                  const coverSrc = company.cover_path
+                    ? `${BACKEND_URL}/storage/${company.cover_path.replace(/^\/+/, '')}`
+                    : company.cover_url || null;
+                  const logoSrc = company.logo_path
+                    ? `${BACKEND_URL}/storage/${company.logo_path.replace(/^\/+/, '')}`
+                    : company.logo_url || null;
+                  const accent =
+                    company.accent_color && /^#[0-9A-Fa-f]{6}$/.test(company.accent_color)
+                      ? company.accent_color
+                      : '#9F7753';
+                  const propertiesCount = company.properties_count ?? 0;
+                  const projectsCount = company.projects_count ?? company.projects?.length ?? 0;
+
+                  return (
+                    <Link
+                      key={company.id}
+                      href={`/companies/${company.slug}`}
+                      className="group flex flex-col overflow-hidden rounded-3xl bg-white shadow-ambient transition-all duration-300 hover:-translate-y-1 hover:shadow-ambient-lg"
+                    >
+                      <div
+                        className="relative h-28 w-full overflow-hidden"
+                        style={{
+                          background: `linear-gradient(135deg, #403E3D 0%, #2F2D2C 55%, ${accent} 100%)`,
+                        }}
+                      >
+                        {coverSrc && (
+                          /* eslint-disable-next-line @next/next/no-img-element */
+                          <img
+                            src={coverSrc}
+                            alt={`غلاف ${company.name}`}
+                            loading="lazy"
+                            className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                          />
+                        )}
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#403E3D]/65 via-transparent to-transparent" />
+                        {company.is_verified && (
+                          <span className="absolute top-3 start-3 inline-flex items-center gap-1 rounded-full bg-[#E8F6EF]/95 px-2.5 py-1 text-[11px] font-bold text-[#136F48]">
+                            <span>✔</span>
+                            <span>شريك معتمد</span>
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="flex flex-1 flex-col px-5 pb-5">
+                        <div className="-mt-8 mb-3 flex items-end justify-between gap-2">
+                          <div className="relative z-10 flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-2xl border-4 border-white bg-[#FAF7F2] shadow-sm">
+                            {logoSrc ? (
+                              /* eslint-disable-next-line @next/next/no-img-element */
+                              <img
+                                src={logoSrc}
+                                alt={company.name}
+                                loading="lazy"
+                                className="h-full w-full object-cover"
+                              />
+                            ) : (
+                              <span className="text-xl font-extrabold text-[#9F7753]">
+                                {company.name.slice(0, 1)}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-1.5 pt-8 tabular-nums-west">
+                            <span className="rounded-full bg-[#F3EAD8] px-2.5 py-1 text-[11px] font-bold text-[#403E3D]">
+                              {projectsCount} مشاريع
+                            </span>
+                            <span className="rounded-full bg-[#FAF7F2] px-2.5 py-1 text-[11px] font-bold text-[#9F7753]">
+                              {propertiesCount} عقار
+                            </span>
+                          </div>
+                        </div>
+
+                        <h3 className="text-base font-extrabold text-[#403E3D] transition group-hover:text-[#9F7753]">
+                          {company.name}
+                        </h3>
+
+                        {company.address && (
+                          <p className="mt-1 text-xs font-bold text-[#9F7753]">
+                            📍 {company.address}
+                          </p>
+                        )}
+
+                        {company.bio && (
+                          <p className="mt-2 line-clamp-2 flex-1 text-xs leading-relaxed text-[#5C5855]">
+                            {company.bio}
+                          </p>
+                        )}
+
+                        <div className="mt-4 flex items-center justify-between border-t border-[#403E3D]/10 pt-3 text-xs font-bold text-[#9F7753] group-hover:text-[#403E3D]">
+                          <span>زيارة صفحة الشركة</span>
+                          <span aria-hidden="true">&#8592;</span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="rounded-3xl bg-white p-10 text-center shadow-ambient">
+                <p className="text-sm font-bold text-[#403E3D]">
+                  استكشف المطورين العقاريين والمكاتب المعتمدة قريباً على ريزيدنزا.
+                </p>
+                <Link
+                  href="/dashboard/company"
+                  className="mt-4 inline-block rounded-full bg-[#9F7753] px-6 py-2.5 text-xs font-bold text-white transition hover:bg-[#8A6346]"
+                >
+                  سجّل صفحتك العقارية الآن
+                </Link>
+              </div>
             )}
           </div>
         </Container>

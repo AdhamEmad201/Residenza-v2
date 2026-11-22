@@ -65,6 +65,17 @@ class PortalPropertyController extends Controller
 
         $company = $user->company()->first();
         if ($company) {
+            if (! $user->isAdmin()) {
+                $maxProperties = max(0, (int) ($company->max_properties ?? 5));
+                $currentCount = Property::query()->where('company_id', $company->id)->count();
+                if ($currentCount >= $maxProperties) {
+                    return ApiResponse::error(
+                        "تم الوصول للحد الأقصى للعقارات المسموح بها في باقتك الحالية ({$maxProperties} عقارات). يرجى ترقية الباقة أو التواصل مع الإدارة.",
+                        'COMPANY_PROPERTY_QUOTA_EXCEEDED',
+                        Response::HTTP_FORBIDDEN
+                    );
+                }
+            }
             $data['company_id'] = $company->id;
         }
         if (isset($data['project_id'])) {
@@ -115,6 +126,17 @@ class PortalPropertyController extends Controller
         $data = $request->validated();
         $company = $user->company()->first();
         if ($company) {
+            if (! $user->isAdmin()) {
+                $maxProperties = max(0, (int) ($company->max_properties ?? 5));
+                $currentCount = Property::query()->where('company_id', $company->id)->count();
+                if ($currentCount >= $maxProperties) {
+                    return ApiResponse::error(
+                        "تم الوصول للحد الأقصى للعقارات المسموح بها في باقتك الحالية ({$maxProperties} عقارات). يرجى ترقية الباقة أو التواصل مع الإدارة.",
+                        'COMPANY_PROPERTY_QUOTA_EXCEEDED',
+                        Response::HTTP_FORBIDDEN
+                    );
+                }
+            }
             $data['company_id'] = $company->id;
         }
         if (array_key_exists('project_id', $data) && $data['project_id'] !== null) {

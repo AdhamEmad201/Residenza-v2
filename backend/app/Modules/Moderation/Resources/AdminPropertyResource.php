@@ -4,8 +4,10 @@ declare(strict_types=1);
 
 namespace App\Modules\Moderation\Resources;
 
+use App\Enums\TransactionType;
 use App\Modules\Media\Resources\PropertyDocumentResource;
 use App\Modules\Media\Resources\PropertyImageResource;
+use App\Modules\Property\Models\Property;
 use App\Modules\Taxonomy\Resources\CategoryResource;
 use App\Modules\Taxonomy\Resources\LocationResource;
 use App\Modules\User\Resources\UserResource;
@@ -60,6 +62,11 @@ class AdminPropertyResource extends JsonResource
             'reviewed_at' => $this->reviewed_at?->toIso8601String(),
             'published_at' => $this->published_at?->toIso8601String(),
             'is_featured' => (bool) $this->is_featured,
+            'views_count' => (int) ($this->views_count ?? 0),
+            'whatsapp_clicks' => (int) ($this->whatsapp_clicks ?? 0),
+            'phone_clicks' => (int) ($this->phone_clicks ?? 0),
+            'is_potential_duplicate' => $this->computePotentialDuplicate(),
+            'is_suspicious_price' => $this->computeSuspiciousPrice(),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
             'deleted_at' => $this->deleted_at?->toIso8601String(),
@@ -80,5 +87,37 @@ class AdminPropertyResource extends JsonResource
                 'created_at' => $log->created_at?->toIso8601String(),
             ])->values()),
         ];
+    }
+
+    private function computePotentialDuplicate(): bool
+    {
+        return Property::query()
+            ->where('id', '!=', $this->id)
+            ->where('user_id', $this->user_id)
+            ->where(function ($q) {
+                $q->where(function ($sub) {
+                    $sub->where('location_id', $this->location_id)
+                        ->where('area_sqm', $this->area_sqm)
+                        ->where('price_egp', $this->price_egp);
+                })->orWhere('title_ar', $this->title_ar);
+            })
+            ->exists();
+    }
+
+    private function computeSuspiciousPrice(): bool
+    {
+        $price = (float) $this->price_egp;
+        $area = (float) $this->area_sqm;
+        $tx = $this->transaction_type instanceof TransactionType
+            ? $this->transaction_type->value
+            : (string) $this->transaction_type;
+
+        if ($tx === TransactionType::Sale->value) {
+            $pricePerSqm = $area > 0 ? $price / $area : 0;
+
+            return $price < 10000 || $price > 500000000 || ($area > 0 && $pricePerSqm < 500);
+        }
+
+        return $price < 300 || $price > 1000000;
     }
 }

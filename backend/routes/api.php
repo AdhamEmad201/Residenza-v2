@@ -3,6 +3,11 @@
 declare(strict_types=1);
 
 use App\Support\ApiResponse;
+use App\Modules\Admin\Controllers\AdminControlAccountsController;
+use App\Modules\Admin\Controllers\AdminControlPropertiesController;
+use App\Modules\Admin\Controllers\AdminOperationsController;
+use App\Modules\Admin\Controllers\AdminOverviewController;
+use App\Modules\Admin\Controllers\PublicEngagementController;
 use App\Modules\Auth\Controllers\AuthController;
 use App\Modules\Company\Controllers\CompanyController;
 use App\Modules\Company\Controllers\MyCompanyController;
@@ -66,6 +71,14 @@ Route::prefix('v1')->group(function () {
         Route::get('/properties/{slug}', [PublicPropertyController::class, 'show']);
         Route::get('/companies', [CompanyController::class, 'index']);
         Route::get('/companies/{slug}', [CompanyController::class, 'show']);
+        Route::get('/site-config', [PublicEngagementController::class, 'siteConfig']);
+        Route::post('/track/click', [PublicEngagementController::class, 'trackClick']);
+    });
+
+    // Public lead intake & property reporting (rate-limited to 10 requests per minute)
+    Route::middleware('throttle:10,1')->group(function () {
+        Route::post('/properties/{id}/report', [PublicEngagementController::class, 'reportProperty']);
+        Route::post('/buyer-requests', [PublicEngagementController::class, 'storeBuyerRequest']);
     });
 
     // Authenticated agency storefront management routes
@@ -112,18 +125,40 @@ Route::prefix('v1')->group(function () {
         });
 
         Route::get('/dashboard', [AdminDashboardController::class, 'index']);
+        Route::get('/overview', [AdminOverviewController::class, 'overview']);
+        Route::get('/audit-logs', [AdminOverviewController::class, 'auditLogs']);
 
         Route::get('/properties', [AdminPropertyController::class, 'index']);
+        Route::get('/control-properties', [AdminControlPropertiesController::class, 'index']);
         Route::post('/properties', [AdminPropertyController::class, 'store']);
         Route::get('/properties/{property}', [AdminPropertyController::class, 'show']);
         Route::patch('/properties/{property}', [AdminPropertyController::class, 'update']);
+        Route::patch('/properties/{id}/moderate', [AdminControlPropertiesController::class, 'moderate']);
         Route::post('/properties/{property}/approve', [AdminPropertyController::class, 'approve']);
         Route::post('/properties/{property}/request-changes', [AdminPropertyController::class, 'requestChanges']);
         Route::post('/properties/{property}/reject', [AdminPropertyController::class, 'reject']);
         Route::delete('/properties/{property}', [AdminPropertyController::class, 'destroy']);
 
-        Route::get('/users', [AdminUserController::class, 'index']);
-        Route::patch('/users/{user}/status', [AdminUserController::class, 'updateStatus']);
+        Route::get('/users', [AdminControlAccountsController::class, 'usersIndex']);
+        Route::patch('/users/{user}/role', [AdminControlAccountsController::class, 'updateUserRole']);
+        Route::patch('/users/{user}/status', [AdminControlAccountsController::class, 'updateUserStatus']);
+
+        Route::get('/companies', [AdminControlAccountsController::class, 'companiesIndex']);
+        Route::patch('/companies/{company}', [AdminControlAccountsController::class, 'updateCompany']);
+
+        Route::get('/areas', [AdminOperationsController::class, 'areasIndex']);
+        Route::post('/areas', [AdminOperationsController::class, 'areasStore']);
+        Route::patch('/areas/{area}', [AdminOperationsController::class, 'areasUpdate']);
+        Route::delete('/areas/{area}', [AdminOperationsController::class, 'areasDestroy']);
+
+        Route::get('/reports', [AdminOperationsController::class, 'reportsIndex']);
+        Route::patch('/reports/{report}', [AdminOperationsController::class, 'reportsUpdate']);
+
+        Route::get('/buyer-requests', [AdminOperationsController::class, 'buyerRequestsIndex']);
+        Route::patch('/buyer-requests/{buyerRequest}', [AdminOperationsController::class, 'buyerRequestsUpdate']);
+
+        Route::post('/site-settings', [AdminOperationsController::class, 'updateSiteSettings']);
+        Route::get('/export/{type}', [AdminOperationsController::class, 'exportCsv']);
 
         Route::get('/categories', [AdminCategoryController::class, 'index']);
         Route::post('/categories', [AdminCategoryController::class, 'store']);

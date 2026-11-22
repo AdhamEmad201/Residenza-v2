@@ -145,3 +145,13 @@ node --test scripts/verify-foundation.mjs
   - Confirms emerald status when both API and Database are connected.
   - Inspect Application / DevTools Cookies to verify that `residenza-session` and `XSRF-TOKEN` are successfully stored with `Domain=localhost` or host-only scope.
 
+---
+
+## 7. Agency Storefronts (`v2.1`) & Admin Control Room (`v2.2`)
+
+Full schema, API endpoint, quota, and Artisan command documentation is maintained in [docs/ADMIN_SYSTEM.md](docs/ADMIN_SYSTEM.md):
+
+- **Agency Storefronts (`v2.1`)**: Public directory (`GET /api/v1/companies`, `/companies`), branded agency storefronts (`GET /api/v1/companies/{slug}`, `/companies/[slug]`), and agency branding dashboard (`/dashboard/company`, `/api/v1/my-company`).
+- **Admin Control Room (`v2.2`)**: Protected `/api/v1/admin/*` endpoints (`overview`, `properties`, `moderate`, `users`, `companies`, `areas`, `reports`, `buyer-requests`, `site-settings`, `audit-logs`, `export/{type}`), public lead/click tracking (`POST /api/v1/track/click`, `POST /api/v1/properties/{id}/report`, `POST /api/v1/buyer-requests`, `GET /api/v1/site-config`), `TrackUserActivity` middleware, company property quotas, and `php artisan residenza:make-admin {email}`.
+
+

@@ -1,7 +1,24 @@
 import { ApiResponse, HealthCheckData } from '@/types/api';
 
-export const BACKEND_URL = (process.env.NEXT_PUBLIC_BACKEND_URL || 'http://localhost:8000').replace(/\/+$/, '');
-export const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api/v1').replace(/\/+$/, '');
+const INTERNAL_BACKEND_URL = (process.env.INTERNAL_BACKEND_URL || 'http://127.0.0.1:8000').replace(/\/+$/, '');
+
+export const BACKEND_URL = (
+  process.env.NEXT_PUBLIC_BACKEND_URL ??
+  process.env.NEXT_PUBLIC_API_URL ??
+  ''
+).replace(/\/+$/, '');
+
+export const API_BASE_URL = (
+  process.env.NEXT_PUBLIC_API_BASE_URL ||
+  (BACKEND_URL ? `${BACKEND_URL}/api/v1` : '/api/v1')
+).replace(/\/+$/, '');
+
+export function resolveRuntimeUrl(url: string): string {
+  if (typeof window === 'undefined' && url.startsWith('/')) {
+    return `${INTERNAL_BACKEND_URL}${url}`;
+  }
+  return url;
+}
 
 export class ApiError extends Error {
   public readonly status: number;
@@ -98,21 +115,35 @@ async function request<T>(endpoint: string, options: RequestOptions = {}): Promi
     }
   }
 
-  const url = endpoint.startsWith('http://') || endpoint.startsWith('https://')
+  const rawUrl = endpoint.startsWith('http://') || endpoint.startsWith('https://')
     ? endpoint
     : endpoint.startsWith('/sanctum/')
       ? `${BACKEND_URL}${endpoint}`
       : `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;
+  const url = resolveRuntimeUrl(rawUrl);
 
-  let response: Response;
-  try {
-    response = await fetch(url, {
+  const executeFetch = async () =>
+    fetch(url, {
       ...options,
       method,
       headers,
       credentials: 'include',
       body: bodyPayload,
     });
+
+  let response: Response;
+  try {
+    response = await executeFetch();
+
+    // Auto-recover once from stale CSRF token (419) in browser sessions
+    if (response.status === 419 && typeof document !== 'undefined' && isMutating) {
+      await ensureCsrfCookie();
+      const refreshedToken = getCookie('XSRF-TOKEN');
+      if (refreshedToken) {
+        headers['X-XSRF-TOKEN'] = refreshedToken;
+      }
+      response = await executeFetch();
+    }
   } catch {
     throw new ApiError('تعذر الوصول إلى الخادم الخلفي', 0, 'NETWORK_ERROR');
   }

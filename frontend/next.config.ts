@@ -1,6 +1,24 @@
 import type { NextConfig } from "next";
 
+const backendOrigin = (process.env.INTERNAL_BACKEND_URL || "http://127.0.0.1:8000").replace(/\/+$/, "");
+
 const nextConfig: NextConfig = {
+  async rewrites() {
+    return [
+      {
+        source: "/api/:path*",
+        destination: `${backendOrigin}/api/:path*`,
+      },
+      {
+        source: "/sanctum/:path*",
+        destination: `${backendOrigin}/sanctum/:path*`,
+      },
+      {
+        source: "/storage/:path*",
+        destination: `${backendOrigin}/storage/:path*`,
+      },
+    ];
+  },
   images: {
     remotePatterns: [
       {

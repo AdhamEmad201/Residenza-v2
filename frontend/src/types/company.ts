@@ -33,6 +33,7 @@ export interface CompanyProfile extends CompanySummary {
   phone: string | null;
   accent_color: string;
   properties_count?: number;
+  projects_count?: number;
   projects?: CompanyProject[];
   created_at?: string;
   updated_at?: string;

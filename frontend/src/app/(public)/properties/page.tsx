@@ -9,6 +9,7 @@ import {
 } from '@/lib/api/public';
 import { PropertyCard } from '@/components/marketplace/PropertyCard';
 import { PropertyFilters } from '@/components/marketplace/PropertyFilters';
+import { BuyerRequestBanner } from '@/components/marketplace/BuyerRequestModal';
 import { Pagination } from '@/components/ui/Pagination';
 import { EmptyState } from '@/components/ui/EmptyState';
 import type {
@@ -114,6 +115,10 @@ export default async function PropertiesPage({ searchParams }: PropertiesPagePro
             </span>
             <span className="ms-1.5 text-xs font-bold text-[#A67C33]">وحدة معتمدة</span>
           </div>
+        </div>
+
+        <div className="mb-10">
+          <BuyerRequestBanner />
         </div>
 
         {/* Two-Column Living Luxury Layout */}

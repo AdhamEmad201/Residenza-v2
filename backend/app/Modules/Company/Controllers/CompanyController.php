@@ -24,6 +24,7 @@ class CompanyController extends Controller
             ->whereHas('user', fn (Builder $u) => $u->where('status', UserStatus::Active->value))
             ->withCount([
                 'properties' => fn (Builder $p) => $p->publicMarketplace(),
+                'projects',
             ]);
 
         if ($request->boolean('verified')) {
@@ -68,6 +69,7 @@ class CompanyController extends Controller
             ->with('projects')
             ->withCount([
                 'properties' => fn (Builder $p) => $p->publicMarketplace(),
+                'projects',
             ])
             ->firstOrFail();
 

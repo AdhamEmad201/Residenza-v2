@@ -26,6 +26,8 @@ class UserResource extends JsonResource
             'account_type' => $this->account_type?->value ?? (string) $this->account_type,
             'company_name' => $this->company_name,
             'status' => $this->status?->value ?? (string) $this->status,
+            'is_active' => (bool) ($this->is_active ?? true),
+            'last_seen_at' => $this->last_seen_at?->toIso8601String(),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

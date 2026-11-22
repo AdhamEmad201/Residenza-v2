@@ -72,6 +72,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link href="/companies" className="transition hover:text-white">
+                  الشركات والمطورون العقاريون
+                </Link>
+              </li>
+              <li>
                 <Link href="/categories" className="transition hover:text-white">
                   دليل التصنيفات العقارية
                 </Link>

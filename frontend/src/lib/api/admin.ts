@@ -1,16 +1,22 @@
-import { api } from '@/lib/api/client';
+import { api, API_BASE_URL } from '@/lib/api/client';
 import type {
   AccountType,
+  AdminAreaItem,
+  AdminAuditLogItem,
+  AdminCompanyItem,
   AdminDashboardStats,
+  AdminOverviewStats,
   AdminProperty,
   ApiResponse,
   AvailabilityStatus,
+  BuyerRequestItem,
   Category,
   CategoryPayload,
   Location,
   LocationPayload,
   ModerationDecisionPayload,
   ModerationStatus,
+  PropertyReportItem,
   TransactionType,
   UpdateUserStatusPayload,
   User,
@@ -21,6 +27,7 @@ import type { PortalPropertyPayload } from './portal';
 
 export interface AdminPropertiesQuery {
   trashed?: 'with' | 'only' | '';
+  status?: 'pending' | 'approved' | 'rejected' | 'stale' | '';
   moderation_status?: ModerationStatus | '';
   availability_status?: AvailabilityStatus | '';
   transaction_type?: TransactionType | '';
@@ -62,11 +69,16 @@ export async function getAdminDashboard(): Promise<ApiResponse<AdminDashboardSta
   return api.get<AdminDashboardStats>('/admin/dashboard');
 }
 
+export async function getAdminOverview(): Promise<ApiResponse<AdminOverviewStats>> {
+  return api.get<AdminOverviewStats>('/admin/overview');
+}
+
 export async function getAdminProperties(
   query: AdminPropertiesQuery = {}
 ): Promise<ApiResponse<AdminProperty[]>> {
   const qs = buildQuery({
     trashed: query.trashed,
+    status: query.status,
     moderation_status: query.moderation_status,
     availability_status: query.availability_status,
     transaction_type: query.transaction_type,
@@ -79,6 +91,18 @@ export async function getAdminProperties(
     per_page: query.per_page,
   });
   return api.get<AdminProperty[]>(`/admin/properties${qs}`);
+}
+
+export async function moderateAdminProperty(
+  propertyId: number | string,
+  payload: {
+    action?: 'approve' | 'reject' | 'feature' | 'unfeature';
+    status?: 'approved' | 'rejected';
+    rejection_reason?: string;
+    is_featured?: boolean;
+  }
+): Promise<ApiResponse<AdminProperty>> {
+  return api.patch<AdminProperty>(`/admin/properties/${propertyId}/moderate`, payload);
 }
 
 export async function adminDirectPublishProperty(
@@ -150,6 +174,125 @@ export async function updateAdminUserStatus(
   payload: UpdateUserStatusPayload
 ): Promise<ApiResponse<User>> {
   return api.patch<User>(`/admin/users/${userId}/status`, payload);
+}
+
+export async function updateAdminUserRole(
+  userId: number | string,
+  role: UserRole
+): Promise<ApiResponse<User>> {
+  return api.patch<User>(`/admin/users/${userId}/role`, { role });
+}
+
+export async function getAdminCompanies(query?: {
+  q?: string;
+  is_verified?: boolean | '';
+  plan_tier?: 'free' | 'partner' | 'enterprise' | '';
+  page?: number;
+  per_page?: number;
+}): Promise<ApiResponse<AdminCompanyItem[]>> {
+  const qs = buildQuery({
+    q: query?.q,
+    is_verified: query?.is_verified,
+    plan_tier: query?.plan_tier,
+    page: query?.page,
+    per_page: query?.per_page ?? 30,
+  });
+  return api.get<AdminCompanyItem[]>(`/admin/companies${qs}`);
+}
+
+export async function updateAdminCompany(
+  companyId: number | string,
+  payload: {
+    is_verified?: boolean;
+    plan_tier?: 'free' | 'partner' | 'enterprise';
+    max_properties?: number;
+    plan_expires_at?: string | null;
+  }
+): Promise<ApiResponse<AdminCompanyItem>> {
+  return api.patch<AdminCompanyItem>(`/admin/companies/${companyId}`, payload);
+}
+
+export async function getAdminAreas(): Promise<ApiResponse<AdminAreaItem[]>> {
+  return api.get<AdminAreaItem[]>('/admin/areas');
+}
+
+export async function createAdminArea(payload: {
+  name: string;
+  city?: string;
+  is_active?: boolean;
+}): Promise<ApiResponse<AdminAreaItem>> {
+  return api.post<AdminAreaItem>('/admin/areas', payload);
+}
+
+export async function updateAdminArea(
+  areaId: number | string,
+  payload: {
+    name?: string;
+    city?: string;
+    is_active?: boolean;
+  }
+): Promise<ApiResponse<AdminAreaItem>> {
+  return api.patch<AdminAreaItem>(`/admin/areas/${areaId}`, payload);
+}
+
+export async function deleteAdminArea(areaId: number | string): Promise<ApiResponse<null>> {
+  return api.delete<null>(`/admin/areas/${areaId}`);
+}
+
+export async function getAdminReports(
+  status?: 'open' | 'resolved' | ''
+): Promise<ApiResponse<PropertyReportItem[]>> {
+  const qs = buildQuery({ status, per_page: 50 });
+  return api.get<PropertyReportItem[]>(`/admin/reports${qs}`);
+}
+
+export async function updateAdminReport(
+  reportId: number | string,
+  payload: {
+    status: 'open' | 'resolved';
+    reject_property?: boolean;
+    rejection_reason?: string;
+  }
+): Promise<ApiResponse<PropertyReportItem>> {
+  return api.patch<PropertyReportItem>(`/admin/reports/${reportId}`, payload);
+}
+
+export async function getAdminBuyerRequests(
+  status?: 'new' | 'assigned' | 'closed' | ''
+): Promise<ApiResponse<BuyerRequestItem[]>> {
+  const qs = buildQuery({ status, per_page: 50 });
+  return api.get<BuyerRequestItem[]>(`/admin/buyer-requests${qs}`);
+}
+
+export async function updateAdminBuyerRequest(
+  requestId: number | string,
+  payload: {
+    status?: 'new' | 'assigned' | 'closed';
+    assigned_company_id?: number | null;
+  }
+): Promise<ApiResponse<BuyerRequestItem>> {
+  return api.patch<BuyerRequestItem>(`/admin/buyer-requests/${requestId}`, payload);
+}
+
+export async function updateAdminSiteSettings(
+  formData: FormData
+): Promise<ApiResponse<Record<string, string>>> {
+  return api.post<Record<string, string>>('/admin/site-settings', formData);
+}
+
+export async function getAdminAuditLogs(
+  page: number = 1
+): Promise<ApiResponse<AdminAuditLogItem[]>> {
+  return api.get<AdminAuditLogItem[]>(`/admin/audit-logs?page=${page}&per_page=30`);
+}
+
+export function getAdminExportCsvUrl(
+  type: 'users' | 'companies' | 'properties' | 'buyer-requests'
+): string {
+  const base = API_BASE_URL.endsWith('/api/v1')
+    ? API_BASE_URL
+    : `${API_BASE_URL.replace(/\/+$/, '')}/api/v1`;
+  return `${base}/admin/export/${type}`;
 }
 
 export async function getAdminCategories(): Promise<ApiResponse<Category[]>> {

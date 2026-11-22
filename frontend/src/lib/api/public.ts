@@ -1,7 +1,8 @@
-import { API_BASE_URL, ApiError } from '@/lib/api/client';
+import { api, API_BASE_URL, ApiError, resolveRuntimeUrl } from '@/lib/api/client';
 import type {
   AccountType,
   ApiResponse,
+  BuyerRequestItem,
   Category,
   FacadeType,
   FinishingType,
@@ -9,9 +10,11 @@ import type {
   Location,
   LocationType,
   PaymentMethod,
+  PropertyReportItem,
   PropertyType,
   PublicProperty,
   RentalPeriod,
+  SiteConfigData,
   TransactionType,
 } from '@/types/api';
 import type { CompanyProfile, CompanyStorefrontResponse } from '@/types/company';
@@ -57,7 +60,7 @@ function buildQueryString(params: Record<string, string | number | boolean | und
 }
 
 async function fetchPublicEndpoint<T>(path: string): Promise<ApiResponse<T>> {
-  const url = `${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`;
+  const url = resolveRuntimeUrl(`${API_BASE_URL}${path.startsWith('/') ? path : `/${path}`}`);
   let response: Response;
 
   try {
@@ -226,6 +229,48 @@ export async function getPublicCompanyStorefront(
       per_page: filters?.per_page ?? 50,
     });
     const res = await fetchPublicEndpoint<CompanyStorefrontResponse>(`/companies/${encodedSlug}${qs}`);
+    return res.data ?? null;
+  } catch {
+    return null;
+  }
+}
+
+export function trackPublicClick(payload: {
+  type: 'whatsapp' | 'phone' | 'view';
+  target_type: 'property' | 'company';
+  id: number;
+}): void {
+  if (typeof window === 'undefined' || !payload.id) return;
+  void api.post('/track/click', payload).catch(() => {
+    // Non-blocking background tracking
+  });
+}
+
+export async function submitPropertyReport(
+  propertyId: number,
+  payload: {
+    reporter_phone?: string;
+    reason: string;
+    notes?: string;
+  }
+): Promise<ApiResponse<PropertyReportItem>> {
+  return api.post<PropertyReportItem>(`/properties/${propertyId}/report`, payload);
+}
+
+export async function submitBuyerRequest(payload: {
+  name: string;
+  phone: string;
+  property_type: string;
+  area: string;
+  budget_max?: number | string | null;
+  notes?: string;
+}): Promise<ApiResponse<BuyerRequestItem>> {
+  return api.post<BuyerRequestItem>('/buyer-requests', payload);
+}
+
+export async function getPublicSiteConfig(): Promise<SiteConfigData | null> {
+  try {
+    const res = await fetchPublicEndpoint<SiteConfigData>('/site-config');
     return res.data ?? null;
   } catch {
     return null;

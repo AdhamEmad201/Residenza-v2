@@ -27,13 +27,20 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->trustProxies(at: '*');
+
         $middleware->statefulApi();
+
+        $middleware->appendToGroup('api', [
+            \App\Http\Middleware\TrackUserActivity::class,
+        ]);
 
         $middleware->redirectGuestsTo(fn (Request $request) => null);
 
         $middleware->alias([
             'user.active' => \App\Http\Middleware\EnsureUserIsActive::class,
             'user.admin' => \App\Http\Middleware\EnsureUserIsAdmin::class,
+            'track.activity' => \App\Http\Middleware\TrackUserActivity::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

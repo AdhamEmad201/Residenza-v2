@@ -56,6 +56,8 @@ export interface User {
   account_type: AccountType;
   company_name?: string | null;
   status: UserStatus;
+  is_active?: boolean;
+  last_seen_at?: string | null;
   created_at?: string;
   updated_at?: string;
 }
@@ -290,7 +292,13 @@ export interface PortalProperty {
 export interface AdminProperty extends PortalProperty {
   reviewed_by: number | null;
   deleted_at: string | null;
+  views_count?: number;
+  whatsapp_clicks?: number;
+  phone_clicks?: number;
+  is_potential_duplicate?: boolean;
+  is_suspicious_price?: boolean;
   user?: User;
+  company?: CompanySummary | null;
   reviewer?: User | null;
   moderation_logs?: Array<{
     id: number;
@@ -340,7 +348,143 @@ export interface ModerationDecisionPayload {
 }
 
 export interface UpdateUserStatusPayload {
-  status: UserStatus;
+  status?: UserStatus;
+  is_active?: boolean;
+}
+
+export interface AdminAreaItem {
+  id: number;
+  name: string;
+  city: string;
+  is_active: boolean;
+  search_count: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface AdminOverviewStats {
+  total_users: number;
+  online_users_count: number;
+  online_users: Array<{
+    id: number;
+    name: string;
+    email: string;
+    role: UserRole;
+    account_type: AccountType;
+    last_seen_at: string;
+  }>;
+  properties: {
+    total: number;
+    pending: number;
+    approved: number;
+    rejected: number;
+    stale: number;
+  };
+  companies: {
+    total: number;
+    verified: number;
+  };
+  engagement: {
+    total_whatsapp_clicks: number;
+    total_phone_clicks: number;
+    total_views: number;
+  };
+  top_areas: AdminAreaItem[];
+  open_reports_count: number;
+  new_buyer_requests_count: number;
+}
+
+export interface AdminCompanyItem {
+  id: number;
+  user_id: number;
+  name: string;
+  slug: string;
+  logo_path: string | null;
+  cover_path: string | null;
+  bio: string | null;
+  address: string | null;
+  whatsapp: string | null;
+  phone: string | null;
+  accent_color: string;
+  is_verified: boolean;
+  plan_tier: 'free' | 'partner' | 'enterprise';
+  max_properties: number;
+  plan_expires_at: string | null;
+  views_count: number;
+  whatsapp_clicks: number;
+  phone_clicks: number;
+  properties_count?: number;
+  projects_count?: number;
+  user?: {
+    id: number;
+    name: string;
+    email: string;
+    phone: string;
+  };
+  created_at?: string;
+}
+
+export interface PropertyReportItem {
+  id: number;
+  property_id: number;
+  reporter_phone: string | null;
+  reason: string;
+  notes: string | null;
+  status: 'open' | 'resolved';
+  created_at: string;
+  property?: {
+    id: number;
+    title_ar: string;
+    reference_code: string;
+    moderation_status: ModerationStatus;
+  } | null;
+}
+
+export interface BuyerRequestItem {
+  id: number;
+  name: string;
+  phone: string;
+  property_type: string;
+  area: string;
+  budget_max: string | null;
+  notes: string | null;
+  assigned_company_id: number | null;
+  status: 'new' | 'assigned' | 'closed';
+  created_at: string;
+  assigned_company?: {
+    id: number;
+    name: string;
+    slug: string;
+  } | null;
+}
+
+export interface AdminAuditLogItem {
+  id: number;
+  admin_id: number;
+  action: string;
+  target_type: string;
+  target_id: number | null;
+  details: Record<string, unknown> | null;
+  created_at: string;
+  admin?: {
+    id: number;
+    name: string;
+    email: string;
+  } | null;
+}
+
+export interface SiteConfigData {
+  areas: AdminAreaItem[];
+  announcement_bar: {
+    text: string;
+    active: boolean;
+  };
+  hero_banner: {
+    title: string;
+    subtitle: string;
+    image: string | null;
+    image_url: string | null;
+  };
 }
 
 export interface CategoryPayload {

@@ -142,6 +142,9 @@ class Property extends Model
             'has_water_meter' => 'boolean',
             'has_natural_gas' => 'boolean',
             'is_featured' => 'boolean',
+            'views_count' => 'integer',
+            'whatsapp_clicks' => 'integer',
+            'phone_clicks' => 'integer',
             'reviewed_at' => 'datetime',
             'published_at' => 'datetime',
         ];
