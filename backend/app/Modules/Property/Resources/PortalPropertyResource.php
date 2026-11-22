@@ -23,6 +23,8 @@ class PortalPropertyResource extends JsonResource
             'reference_code' => $this->reference_code,
             'slug' => $this->slug,
             'user_id' => $this->user_id,
+            'company_id' => $this->company_id,
+            'project_id' => $this->project_id,
             'category_id' => $this->category_id,
             'location_id' => $this->location_id,
             'transaction_type' => $this->transaction_type?->value ?? $this->transaction_type,

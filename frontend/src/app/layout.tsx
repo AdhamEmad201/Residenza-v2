@@ -45,7 +45,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body
-        className={`${cairo.variable} font-sans antialiased bg-[#FAF7F2] text-[#131E26] min-h-screen overflow-x-hidden selection:bg-[#C59B4E]/20`}
+        className={`${cairo.variable} font-sans antialiased bg-[#FAF7F2] text-[#403E3D] min-h-screen overflow-x-hidden selection:bg-[#9F7753]/20`}
       >
         <AuthProvider>
           <div className="flex min-h-screen flex-col">

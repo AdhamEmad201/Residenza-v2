@@ -9,6 +9,7 @@ use App\Modules\Taxonomy\Resources\CategoryResource;
 use App\Modules\Taxonomy\Resources\LocationResource;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Storage;
 
 class PublicPropertyResource extends JsonResource
 {
@@ -59,6 +60,20 @@ class PublicPropertyResource extends JsonResource
                 'account_type' => $this->user->account_type?->value ?? $this->user->account_type,
                 'company_name' => $this->user->company_name,
             ]),
+            'company' => $this->whenLoaded('company', fn () => $this->company ? [
+                'id' => $this->company->id,
+                'name' => $this->company->name,
+                'slug' => $this->company->slug,
+                'logo_path' => $this->company->logo_path,
+                'logo_url' => $this->company->logo_path ? Storage::disk('public')->url($this->company->logo_path) : null,
+                'is_verified' => (bool) $this->company->is_verified,
+                'accent_color' => $this->company->accent_color ?: '#9F7753',
+            ] : null),
+            'project' => $this->whenLoaded('project', fn () => $this->project ? [
+                'id' => $this->project->id,
+                'name' => $this->project->name,
+                'slug' => $this->project->slug,
+            ] : null),
         ];
     }
 }

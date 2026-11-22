@@ -6,15 +6,16 @@
 
 :root {
   --bg-canvas: #FAF7F2;
-  --bg-sand: #F3EDE2;
+  --bg-sand: #F3EAD8;
   --bg-surface: #FFFFFF;
-  --bg-nile: #131E26;
-  --text-primary: #131E26;
-  --text-secondary: #4A555E;
-  --text-muted: #78828A;
-  --accent-gold: #C59B4E;
-  --accent-gold-hover: #A67C33;
-  --accent-gold-soft: #F7EFE0;
+  --bg-nile: #403E3D;
+  --text-primary: #403E3D;
+  --text-secondary: #5C5855;
+  --text-muted: #7D7772;
+  --accent-gold: #9F7753;
+  --accent-gold-hover: #8A6346;
+  --accent-gold-secondary: #CEB38F;
+  --accent-gold-soft: #F3EAD8;
   --trust-emerald: #136F48;
   --trust-emerald-bg: #E8F6EF;
   --background: var(--bg-canvas);
@@ -35,7 +36,7 @@ body {
 }
 
 ::selection {
-  background-color: rgba(197, 155, 78, 0.22);
+  background-color: rgba(159, 119, 83, 0.22);
   color: var(--text-primary);
 }
 
@@ -122,14 +123,14 @@ body {
 }
 
 .bg-nile-luxury {
-  background-image: linear-gradient(135deg, #131E26 0%, #1C2C38 55%, #111A21 100%);
+  background-image: linear-gradient(135deg, #403E3D 0%, #2F2D2C 55%, #232221 100%);
 }
 
 .bg-warm-glow {
   background-image: radial-gradient(
     circle at 50% 0%,
-    rgba(197, 155, 78, 0.16) 0%,
-    rgba(243, 237, 226, 0) 70%
+    rgba(159, 119, 83, 0.16) 0%,
+    rgba(243, 234, 216, 0) 70%
   );
 }
 

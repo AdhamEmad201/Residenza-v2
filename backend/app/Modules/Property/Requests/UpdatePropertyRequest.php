@@ -31,6 +31,7 @@ class UpdatePropertyRequest extends FormRequest
         $maxBuildingYear = Carbon::now('Africa/Cairo')->year + 5;
 
         return [
+            'project_id' => ['sometimes', 'nullable', 'integer', 'exists:projects,id'],
             'category_id' => ['sometimes', 'integer', Rule::exists('categories', 'id')->where('is_active', true)],
             'location_id' => ['sometimes', 'integer', Rule::exists('locations', 'id')->where('is_active', true)],
             'transaction_type' => ['sometimes', 'string', Rule::enum(TransactionType::class)],

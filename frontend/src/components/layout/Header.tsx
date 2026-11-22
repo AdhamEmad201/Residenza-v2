@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { Container } from './Container';
@@ -67,28 +68,25 @@ export function Header() {
     >
       <Container>
         <div className="flex items-center justify-between gap-3">
-          {/* Warm Luxury Brand Identity */}
+          {/* Official RESIDENZA Brand SVG Identity */}
           <Link
             href="/"
-            className="group flex items-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#C59B4E]"
+            className="group flex items-center gap-3 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#9F7753]"
           >
-            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[#131E26] text-sm font-extrabold text-[#C59B4E] shadow-sm transition-transform duration-300 group-hover:scale-105">
-              R
-            </span>
-            <div className="flex flex-col">
-              <span className="text-xl font-extrabold tracking-tight text-[#131E26] leading-none">
-                ريزيدنزا
-              </span>
-              <span className="mt-1 text-[10px] font-bold tracking-[0.18em] text-[#A67C33] uppercase">
-                RESIDENZA SOHAG
-              </span>
-            </div>
+            <Image
+              src="/images/residenza-logo.svg"
+              alt="RESIDENZA"
+              width={162}
+              height={40}
+              priority
+              className="h-9 w-auto transition-transform duration-300 group-hover:scale-[1.02] sm:h-10"
+            />
           </Link>
 
           {/* Floating Pill Navigation */}
           <nav
             aria-label="القائمة الرئيسية"
-            className="hidden items-center gap-1 rounded-full bg-[#F3EDE2]/90 p-1.5 lg:flex"
+            className="hidden items-center gap-1 rounded-full bg-[#F3EAD8]/90 p-1.5 lg:flex"
           >
             {NAV_ITEMS.map((item) => {
               const isActive =
@@ -101,8 +99,8 @@ export function Header() {
                   href={item.href}
                   className={`rounded-full px-4 py-2 text-xs font-bold transition-all duration-200 ${
                     isActive
-                      ? 'bg-[#131E26] text-white shadow-xs'
-                      : 'text-[#4A555E] hover:bg-white/70 hover:text-[#131E26]'
+                      ? 'bg-[#403E3D] text-white shadow-xs'
+                      : 'text-[#5C5855] hover:bg-white/75 hover:text-[#403E3D]'
                   }`}
                 >
                   {item.label}
@@ -115,9 +113,9 @@ export function Header() {
           <div className="hidden items-center gap-3 lg:flex">
             {!isLoading && isAuthenticated && user ? (
               <div className="flex items-center gap-3">
-                <div className="rounded-full bg-[#F3EDE2] px-4 py-1.5 text-start">
-                  <p className="text-xs font-bold text-[#131E26]">{user.name}</p>
-                  <p className="text-[10px] font-semibold text-[#A67C33]">
+                <div className="rounded-full bg-[#F3EAD8] px-4 py-1.5 text-start">
+                  <p className="text-xs font-bold text-[#403E3D]">{user.name}</p>
+                  <p className="text-[10px] font-semibold text-[#8A6346]">
                     {ACCOUNT_TYPE_LABELS[user.account_type] || 'عضو مسجل'}
                   </p>
                 </div>
@@ -125,7 +123,7 @@ export function Header() {
                 {user.role === 'admin' && (
                   <Link
                     href="/admin"
-                    className="rounded-full bg-[#F7EFE0] px-4 py-2.5 text-xs font-bold text-[#8E6722] transition-all hover:bg-[#C59B4E] hover:text-white"
+                    className="rounded-full bg-[#F3EAD8] px-4 py-2.5 text-xs font-bold text-[#8A6346] transition-all hover:bg-[#9F7753] hover:text-white"
                   >
                     لوحة الإدارة
                   </Link>
@@ -133,7 +131,7 @@ export function Header() {
 
                 <Link
                   href="/portal"
-                  className="rounded-full bg-[#131E26] px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-all hover:bg-[#1E2E3A] active:scale-[0.98]"
+                  className="rounded-full bg-[#403E3D] px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-all hover:bg-[#2F2D2C] active:scale-[0.98]"
                 >
                   بوابة حسابي
                 </Link>
@@ -142,7 +140,7 @@ export function Header() {
                   type="button"
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="cursor-pointer rounded-full px-3 py-2 text-xs font-bold text-[#78828A] transition hover:bg-red-50 hover:text-red-700 disabled:opacity-50"
+                  className="cursor-pointer rounded-full px-3 py-2 text-xs font-bold text-[#7D7772] transition hover:bg-red-50 hover:text-red-700 disabled:opacity-50"
                 >
                   {isLoggingOut ? 'جارٍ الخروج...' : 'خروج'}
                 </button>
@@ -151,13 +149,13 @@ export function Header() {
               <div className="flex items-center gap-2.5">
                 <Link
                   href="/login"
-                  className="rounded-full px-4 py-2.5 text-xs font-bold text-[#131E26] transition-all hover:bg-[#F3EDE2]"
+                  className="rounded-full px-4 py-2.5 text-xs font-bold text-[#403E3D] transition-all hover:bg-[#F3EAD8]"
                 >
                   تسجيل الدخول
                 </Link>
                 <Link
                   href="/register"
-                  className="rounded-full bg-[#C59B4E] px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-all duration-300 hover:bg-[#A67C33] hover:shadow-md active:scale-[0.98]"
+                  className="rounded-full bg-[#9F7753] px-5 py-2.5 text-xs font-bold text-white shadow-sm transition-all duration-300 hover:bg-[#8A6346] hover:shadow-md active:scale-[0.98]"
                 >
                   أضف عقارك
                 </Link>
@@ -171,7 +169,7 @@ export function Header() {
             onClick={() => setMobileMenuOpen((prev) => !prev)}
             aria-expanded={mobileMenuOpen}
             aria-label="فتح أو إغلاق القائمة"
-            className="inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#F3EDE2] text-[#131E26] transition hover:bg-[#E6DEC8] lg:hidden"
+            className="inline-flex h-10 w-10 shrink-0 cursor-pointer items-center justify-center rounded-full bg-[#F3EAD8] text-[#403E3D] transition hover:bg-[#CEB38F]/40 lg:hidden"
           >
             {mobileMenuOpen ? (
               <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -201,12 +199,12 @@ export function Header() {
                     onClick={() => setMobileMenuOpen(false)}
                     className={`flex items-center justify-between rounded-2xl px-4 py-3 text-sm font-bold transition ${
                       isActive
-                        ? 'bg-[#131E26] text-white'
-                        : 'text-[#131E26] hover:bg-[#FAF7F2]'
+                        ? 'bg-[#403E3D] text-white'
+                        : 'text-[#403E3D] hover:bg-[#FAF7F2]'
                     }`}
                   >
                     <span>{item.label}</span>
-                    <span className="text-xs text-[#C59B4E]">&#8592;</span>
+                    <span className="text-xs text-[#9F7753]">&#8592;</span>
                   </Link>
                 );
               })}
@@ -216,8 +214,8 @@ export function Header() {
               {!isLoading && isAuthenticated && user ? (
                 <div className="space-y-3">
                   <div className="rounded-2xl bg-[#FAF7F2] px-4 py-3">
-                    <p className="text-sm font-bold text-[#131E26]">{user.name}</p>
-                    <p className="text-xs text-[#A67C33]">
+                    <p className="text-sm font-bold text-[#403E3D]">{user.name}</p>
+                    <p className="text-xs text-[#8A6346]">
                       {ACCOUNT_TYPE_LABELS[user.account_type] || 'عضو مسجل'}
                     </p>
                   </div>
@@ -225,7 +223,7 @@ export function Header() {
                     <Link
                       href="/portal"
                       onClick={() => setMobileMenuOpen(false)}
-                      className="rounded-full bg-[#131E26] py-3 text-center text-xs font-bold text-white"
+                      className="rounded-full bg-[#403E3D] py-3 text-center text-xs font-bold text-white"
                     >
                       بوابة حسابي
                     </Link>
@@ -244,14 +242,14 @@ export function Header() {
                   <Link
                     href="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="rounded-full bg-[#F3EDE2] py-3 text-center text-xs font-bold text-[#131E26]"
+                    className="rounded-full bg-[#F3EAD8] py-3 text-center text-xs font-bold text-[#403E3D]"
                   >
                     تسجيل الدخول
                   </Link>
                   <Link
                     href="/register"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="rounded-full bg-[#C59B4E] py-3 text-center text-xs font-bold text-white"
+                    className="rounded-full bg-[#9F7753] py-3 text-center text-xs font-bold text-white"
                   >
                     أضف عقارك
                   </Link>

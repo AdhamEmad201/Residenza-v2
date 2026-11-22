@@ -16,9 +16,11 @@ import type {
   UpdateProfilePayload,
   User,
 } from '@/types/api';
+import type { CompanyProfile, CompanyProject } from '@/types/company';
 
 export interface PortalPropertyPayload {
   submit?: boolean;
+  project_id?: number | null;
   category_id: number;
   location_id: number;
   transaction_type: TransactionType;
@@ -182,4 +184,26 @@ export function getDocumentDownloadUrl(documentId: number | string): string {
     ? API_BASE_URL
     : `${API_BASE_URL.replace(/\/+$/, '')}/api/v1`;
   return `${base}/documents/${documentId}/download`;
+}
+
+export async function getMyCompany(): Promise<ApiResponse<CompanyProfile | null>> {
+  return api.get<CompanyProfile | null>('/my-company');
+}
+
+export async function upsertMyCompany(
+  formData: FormData
+): Promise<ApiResponse<CompanyProfile>> {
+  return api.post<CompanyProfile>('/my-company', formData);
+}
+
+export async function createMyCompanyProject(
+  formData: FormData
+): Promise<ApiResponse<CompanyProject>> {
+  return api.post<CompanyProject>('/my-company/projects', formData);
+}
+
+export async function deleteMyCompanyProject(
+  projectId: number | string
+): Promise<ApiResponse<null>> {
+  return api.delete<null>(`/my-company/projects/${projectId}`);
 }

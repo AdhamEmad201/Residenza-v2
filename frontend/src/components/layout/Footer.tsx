@@ -1,4 +1,5 @@
 import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { Container } from './Container';
 
@@ -10,10 +11,24 @@ export function Footer() {
       <Container className="py-20">
         {/* Top Organic Luxury Banner */}
         <div className="flex flex-col items-start justify-between gap-6 rounded-3xl bg-white/[0.04] p-8 backdrop-blur-md lg:flex-row lg:items-center">
-          <div className="space-y-2">
-            <span className="inline-block rounded-full bg-[#C59B4E]/20 px-3.5 py-1 text-[11px] font-bold tracking-wider text-[#E5C378]">
-              RESIDENZA LIVING LUXURY · SOHAG
-            </span>
+          <div className="space-y-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href="/"
+                className="inline-flex items-center rounded-2xl bg-[#FAF7F2] px-4 py-2 shadow-sm transition hover:bg-white"
+              >
+                <Image
+                  src="/images/residenza-logo.svg"
+                  alt="RESIDENZA"
+                  width={154}
+                  height={38}
+                  className="h-8 w-auto sm:h-9"
+                />
+              </Link>
+              <span className="inline-block rounded-full bg-[#9F7753]/25 px-3.5 py-1 text-[11px] font-bold tracking-wider text-[#CEB38F]">
+                RESIDENZA LIVING LUXURY · SOHAG
+              </span>
+            </div>
             <h2 className="text-2xl font-bold tracking-tight text-white sm:text-3xl">
               ريزيدنزا — وجهتك العقارية الموثوقة في محافظة سوهاج
             </h2>
@@ -28,7 +43,7 @@ export function Footer() {
         {/* 4-Column Living Directory */}
         <div className="grid grid-cols-1 gap-10 py-14 sm:grid-cols-2 lg:grid-cols-4">
           <div className="space-y-3">
-            <span className="text-xs font-bold text-[#C59B4E]">
+            <span className="text-xs font-bold text-[#CEB38F]">
               رؤية ريزيدنزا
             </span>
             <p className="text-xs leading-loose text-[#D5CFC4]">
@@ -37,7 +52,7 @@ export function Footer() {
           </div>
 
           <div className="space-y-3">
-            <span className="text-xs font-bold text-[#C59B4E]">
+            <span className="text-xs font-bold text-[#CEB38F]">
               استكشف العقارات
             </span>
             <ul className="space-y-2.5 text-xs text-[#D5CFC4]">
@@ -65,7 +80,7 @@ export function Footer() {
           </div>
 
           <div className="space-y-3">
-            <span className="text-xs font-bold text-[#C59B4E]">
+            <span className="text-xs font-bold text-[#CEB38F]">
               أبرز وجهات سوهاج
             </span>
             <ul className="space-y-2.5 text-xs text-[#D5CFC4]">
@@ -93,7 +108,7 @@ export function Footer() {
           </div>
 
           <div className="space-y-3">
-            <span className="text-xs font-bold text-[#C59B4E]">
+            <span className="text-xs font-bold text-[#CEB38F]">
               خدمات الملاك والمعلنين
             </span>
             <ul className="space-y-2.5 text-xs text-[#D5CFC4]">
@@ -124,7 +139,7 @@ export function Footer() {
         {/* Honest Verification Charter Notice (Rule D-11) */}
         <div className="flex flex-col justify-between gap-6 rounded-2xl bg-white/[0.03] p-6 text-xs text-[#A39E93] lg:flex-row lg:items-center">
           <p className="max-w-3xl leading-relaxed">
-            <strong className="text-[#E5C378]">تنويه الشفافية والاعتماد الإعلاني:</strong>{' '}
+            <strong className="text-[#CEB38F]">تنويه الشفافية والاعتماد الإعلاني:</strong>{' '}
             عبارة «معتمد للنشر» أو «تمت مراجعة البيانات» تفيد بمراجعة إدارة منصة ريزيدنزا لاكتمال البيانات والصور والهيكل المالي المعلن قبل إتاحته للجمهور، ولا تُعد بديلاً عن الفحص القانوني الرسمي للملكية لدى الشهر العقاري عند التعاقد.
           </p>
 

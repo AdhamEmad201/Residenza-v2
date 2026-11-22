@@ -15,6 +15,8 @@ use App\Enums\TransactionType;
 use App\Enums\UserRole;
 use App\Enums\UserStatus;
 use App\Models\User;
+use App\Modules\Company\Models\Company;
+use App\Modules\Company\Models\Project;
 use App\Modules\Media\Models\PropertyDocument;
 use App\Modules\Media\Models\PropertyImage;
 use App\Modules\Moderation\Models\ModerationLog;
@@ -77,6 +79,8 @@ class Property extends Model
     protected $fillable = [
         'reference_code',
         'slug',
+        'company_id',
+        'project_id',
         'category_id',
         'location_id',
         'transaction_type',
@@ -672,6 +676,16 @@ class Property extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    public function company(): BelongsTo
+    {
+        return $this->belongsTo(Company::class, 'company_id');
+    }
+
+    public function project(): BelongsTo
+    {
+        return $this->belongsTo(Project::class, 'project_id');
     }
 
     public function category(): BelongsTo

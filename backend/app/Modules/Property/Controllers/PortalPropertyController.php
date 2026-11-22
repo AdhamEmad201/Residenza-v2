@@ -63,6 +63,21 @@ class PortalPropertyController extends Controller
         $shouldSubmit = (bool) ($data['submit'] ?? true);
         unset($data['submit']);
 
+        $company = $user->company()->first();
+        if ($company) {
+            $data['company_id'] = $company->id;
+        }
+        if (isset($data['project_id'])) {
+            $ownsProject = $company !== null && $company->projects()->where('id', (int) $data['project_id'])->exists();
+            if (! $ownsProject) {
+                return ApiResponse::error(
+                    'المشروع المحدد لا ينتمي إلى شركتك.',
+                    'INVALID_PROJECT_OWNERSHIP',
+                    Response::HTTP_UNPROCESSABLE_ENTITY
+                );
+            }
+        }
+
         $data['contact_phone'] = $data['contact_phone'] ?? $user->phone;
         $data['contact_whatsapp'] = $data['contact_whatsapp'] ?? ($user->whatsapp_number ?: $user->phone);
         $data['slug'] = $this->generateUniqueSlug((string) $data['title_ar']);
@@ -96,7 +111,24 @@ class PortalPropertyController extends Controller
     {
         Gate::authorize('update', $property);
 
-        $updated = $property->updateByOwner($request->validated(), $request->user());
+        $user = $request->user();
+        $data = $request->validated();
+        $company = $user->company()->first();
+        if ($company) {
+            $data['company_id'] = $company->id;
+        }
+        if (array_key_exists('project_id', $data) && $data['project_id'] !== null) {
+            $ownsProject = $company !== null && $company->projects()->where('id', (int) $data['project_id'])->exists();
+            if (! $ownsProject) {
+                return ApiResponse::error(
+                    'المشروع المحدد لا ينتمي إلى شركتك.',
+                    'INVALID_PROJECT_OWNERSHIP',
+                    Response::HTTP_UNPROCESSABLE_ENTITY
+                );
+            }
+        }
+
+        $updated = $property->updateByOwner($data, $user);
         $updated->load(['category', 'location', 'images', 'documents', 'moderationLogs']);
 
         return ApiResponse::success(

@@ -24,7 +24,14 @@ class PublicPropertyController extends Controller
     {
         $query = Property::query()
             ->publicMarketplace()
-            ->with(['category', 'location', 'images', 'user']);
+            ->with([
+                'category',
+                'location',
+                'images',
+                'user',
+                'company:id,name,slug,logo_path,is_verified,accent_color',
+                'project:id,name,slug',
+            ]);
 
         if (is_string($tx = $request->query('transaction_type')) && TransactionType::tryFrom($tx) !== null) {
             $query->where('transaction_type', $tx);
@@ -120,7 +127,14 @@ class PublicPropertyController extends Controller
     {
         $property = Property::query()
             ->publicMarketplace()
-            ->with(['category', 'location', 'images', 'user'])
+            ->with([
+                'category',
+                'location',
+                'images',
+                'user',
+                'company:id,name,slug,logo_path,is_verified,accent_color',
+                'project:id,name,slug',
+            ])
             ->where('slug', $slug)
             ->firstOrFail();
 

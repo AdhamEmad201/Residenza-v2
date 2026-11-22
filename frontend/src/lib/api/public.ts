@@ -14,6 +14,7 @@ import type {
   RentalPeriod,
   TransactionType,
 } from '@/types/api';
+import type { CompanyProfile, CompanyStorefrontResponse } from '@/types/company';
 
 export interface PropertySearchFilters {
   transaction_type?: TransactionType | '';
@@ -179,6 +180,54 @@ export async function getPublicPropertyBySlug(slug: string): Promise<PublicPrope
     if (error instanceof ApiError && error.status === 404) {
       return null;
     }
+    return null;
+  }
+}
+
+export async function getPublicCompanies(options?: {
+  verified?: boolean;
+  q?: string;
+  page?: number;
+  per_page?: number;
+}): Promise<CompanyProfile[]> {
+  try {
+    const qs = buildQueryString({
+      verified: options?.verified ? '1' : undefined,
+      q: options?.q,
+      page: options?.page,
+      per_page: options?.per_page,
+    });
+    const res = await fetchPublicEndpoint<CompanyProfile[]>(`/companies${qs}`);
+    return res.data ?? [];
+  } catch {
+    return [];
+  }
+}
+
+export async function getPublicCompanyStorefront(
+  slug: string,
+  filters?: {
+    transaction_type?: TransactionType | '';
+    project_id?: number | string;
+    q?: string;
+    sort?: 'newest' | 'price_asc' | 'price_desc' | 'area_desc' | '';
+    page?: number | string;
+    per_page?: number | string;
+  }
+): Promise<CompanyStorefrontResponse | null> {
+  try {
+    const encodedSlug = encodeURIComponent(slug);
+    const qs = buildQueryString({
+      transaction_type: filters?.transaction_type,
+      project_id: filters?.project_id,
+      q: filters?.q,
+      sort: filters?.sort,
+      page: filters?.page,
+      per_page: filters?.per_page ?? 50,
+    });
+    const res = await fetchPublicEndpoint<CompanyStorefrontResponse>(`/companies/${encodedSlug}${qs}`);
+    return res.data ?? null;
+  } catch {
     return null;
   }
 }

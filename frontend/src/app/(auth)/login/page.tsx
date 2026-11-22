@@ -1,6 +1,7 @@
 'use client';
 
 import React, { Suspense, useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Container } from '@/components/layout/Container';
@@ -53,13 +54,25 @@ function LoginFormContent() {
   return (
     <div className="mx-auto max-w-md rounded-3xl bg-white p-8 shadow-ambient-lg sm:p-10">
       <div>
-        <span className="inline-block rounded-full bg-[#F7EFE0] px-3.5 py-1 text-xs font-bold text-[#A67C33]">
-          بوابة الأعضاء والمعلنين
-        </span>
-        <h1 className="mt-3 text-2xl font-extrabold text-[#131E26] sm:text-3xl">
+        <Link href="/" className="mb-4 inline-flex items-center">
+          <Image
+            src="/images/residenza-logo.svg"
+            alt="RESIDENZA"
+            width={154}
+            height={38}
+            priority
+            className="h-9 w-auto"
+          />
+        </Link>
+        <div className="mt-1">
+          <span className="inline-block rounded-full bg-[#F3EAD8] px-3.5 py-1 text-xs font-bold text-[#8A6346]">
+            بوابة الأعضاء والمعلنين
+          </span>
+        </div>
+        <h1 className="mt-3 text-2xl font-extrabold text-[#403E3D] sm:text-3xl">
           تسجيل الدخول إلى ريزيدنزا
         </h1>
-        <p className="mt-1.5 text-xs leading-relaxed text-[#4A555E]">
+        <p className="mt-1.5 text-xs leading-relaxed text-[#5C5855]">
           أدخل بيانات حسابك لإدارة وحداتك العقارية ومتابعة حالة الاعتماد.
         </p>
       </div>
@@ -107,11 +120,11 @@ function LoginFormContent() {
         </div>
       </form>
 
-      <div className="mt-8 rounded-2xl bg-[#FAF7F2] p-4 text-center text-xs text-[#4A555E]">
+      <div className="mt-8 rounded-2xl bg-[#FAF7F2] p-4 text-center text-xs text-[#5C5855]">
         <span>ليس لديك حساب معلن بعد؟</span>{' '}
         <Link
           href="/register"
-          className="font-bold text-[#A67C33] underline-offset-4 hover:underline"
+          className="font-bold text-[#8A6346] underline-offset-4 hover:underline"
         >
           إنشاء حساب جديد (مالك / وسيط / شركة)
         </Link>

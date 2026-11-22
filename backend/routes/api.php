@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 use App\Support\ApiResponse;
 use App\Modules\Auth\Controllers\AuthController;
+use App\Modules\Company\Controllers\CompanyController;
+use App\Modules\Company\Controllers\MyCompanyController;
 use App\Modules\Media\Controllers\DocumentDownloadController;
 use App\Modules\Media\Controllers\PropertyMediaController;
 use App\Modules\Moderation\Controllers\AdminDashboardController;
@@ -62,6 +64,18 @@ Route::prefix('v1')->group(function () {
         Route::get('/locations', [TaxonomyController::class, 'locations']);
         Route::get('/properties', [PublicPropertyController::class, 'index']);
         Route::get('/properties/{slug}', [PublicPropertyController::class, 'show']);
+        Route::get('/companies', [CompanyController::class, 'index']);
+        Route::get('/companies/{slug}', [CompanyController::class, 'show']);
+    });
+
+    // Authenticated agency storefront management routes
+    Route::middleware(['auth:sanctum', 'user.active'])->group(function () {
+        Route::get('/my-company', [MyCompanyController::class, 'show']);
+        Route::post('/my-company', [MyCompanyController::class, 'upsert'])
+            ->middleware('throttle:20,1');
+        Route::post('/my-company/projects', [MyCompanyController::class, 'storeProject'])
+            ->middleware('throttle:20,1');
+        Route::delete('/my-company/projects/{id}', [MyCompanyController::class, 'destroyProject']);
     });
 
     // Authenticated user portal routes

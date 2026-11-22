@@ -31,6 +31,7 @@ class StorePropertyRequest extends FormRequest
 
         return [
             'submit' => ['sometimes', 'boolean'],
+            'project_id' => ['nullable', 'integer', 'exists:projects,id'],
             'category_id' => ['required', 'integer', Rule::exists('categories', 'id')->where('is_active', true)],
             'location_id' => ['required', 'integer', Rule::exists('locations', 'id')->where('is_active', true)],
             'transaction_type' => ['required', 'string', Rule::enum(TransactionType::class)],

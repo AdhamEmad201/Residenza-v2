@@ -1,3 +1,5 @@
+import type { CompanySummary } from '@/types/company';
+
 export type UserRole = 'user' | 'admin';
 export type AccountType = 'individual' | 'broker' | 'company' | 'admin';
 export type UserStatus = 'active' | 'suspended';
@@ -219,6 +221,12 @@ export interface PublicProperty {
   location?: Location;
   images?: PropertyImage[];
   owner_display?: PublicPropertyOwnerDisplay;
+  company?: CompanySummary | null;
+  project?: {
+    id: number;
+    name: string;
+    slug: string;
+  } | null;
 }
 
 export interface PortalProperty {
@@ -226,6 +234,8 @@ export interface PortalProperty {
   reference_code: string;
   slug: string;
   user_id: number;
+  company_id?: number | null;
+  project_id?: number | null;
   category_id: number;
   location_id: number;
   transaction_type: TransactionType;

@@ -38,6 +38,22 @@ function resolveImageUrl(
   return CURATED_FALLBACK_IMAGES[Math.abs(propertyId) % CURATED_FALLBACK_IMAGES.length];
 }
 
+function resolveCompanyLogoUrl(company?: {
+  logo_url?: string | null;
+  logo_path?: string | null;
+} | null): string | null {
+  if (!company) return null;
+  if (company.logo_url) {
+    return company.logo_url.startsWith('http')
+      ? company.logo_url
+      : `${BACKEND_URL}${company.logo_url.startsWith('/') ? company.logo_url : `/${company.logo_url}`}`;
+  }
+  if (company.logo_path) {
+    return `${BACKEND_URL}/storage/${company.logo_path.replace(/^\/+/, '')}`;
+  }
+  return null;
+}
+
 export function PropertyCard({ property }: PropertyCardProps) {
   const cardRef = useRef<HTMLElement | null>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -68,6 +84,7 @@ export function PropertyCard({ property }: PropertyCardProps) {
   const primaryImage =
     property.images?.find((img) => img.is_primary) || property.images?.[0] || null;
   const coverUrl = resolveImageUrl(primaryImage, property.id);
+  const companyLogoUrl = resolveCompanyLogoUrl(property.company);
 
   const isDualPrice =
     property.transaction_type === 'sale' &&
@@ -133,23 +150,56 @@ export function PropertyCard({ property }: PropertyCardProps) {
       <div className="flex flex-1 flex-col justify-between px-2 pt-4 pb-1.5">
         <div>
           <div className="flex items-center justify-between gap-2 text-xs">
-            <span className="font-bold text-[#A67C33]">
+            <span className="font-bold text-[#9F7753]">
               {property.category?.name_ar || 'وحدة عقارية فاخرة'}
             </span>
-            {property.owner_display && (
-              <span className="text-[11px] text-[#78828A]">
-                {ACCOUNT_TYPE_LABELS[property.owner_display.account_type]}
-              </span>
+            {property.company ? (
+              <Link
+                href={`/companies/${property.company.slug}`}
+                onClick={(e) => e.stopPropagation()}
+                className="inline-flex max-w-[190px] items-center gap-1.5 rounded-full bg-[#F3EAD8] px-2.5 py-1 text-[11px] font-bold text-[#403E3D] transition hover:bg-[#9F7753] hover:text-white"
+                title={`زيارة واجهة ${property.company.name}`}
+              >
+                {companyLogoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={companyLogoUrl}
+                    alt={property.company.name}
+                    loading="lazy"
+                    decoding="async"
+                    className="h-4 w-4 shrink-0 rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="flex h-4 w-4 shrink-0 items-center justify-center rounded-full bg-[#403E3D] text-[9px] font-extrabold text-[#CEB38F]">
+                    {property.company.name.slice(0, 1)}
+                  </span>
+                )}
+                <span className="truncate">{property.company.name}</span>
+                {property.company.is_verified && (
+                  <span
+                    className="inline-flex h-3.5 w-3.5 shrink-0 items-center justify-center rounded-full bg-[#136F48] text-[9px] text-white"
+                    aria-label="شريك معتمد"
+                  >
+                    ✔
+                  </span>
+                )}
+              </Link>
+            ) : (
+              property.owner_display && (
+                <span className="text-[11px] text-[#7D7772]">
+                  {ACCOUNT_TYPE_LABELS[property.owner_display.account_type]}
+                </span>
+              )
             )}
           </div>
 
-          <h3 className="mt-1.5 line-clamp-2 text-lg font-bold leading-snug text-[#131E26] transition-colors group-hover:text-[#A67C33]">
+          <h3 className="mt-1.5 line-clamp-2 text-lg font-bold leading-snug text-[#403E3D] transition-colors group-hover:text-[#9F7753]">
             <Link href={`/properties/${property.slug}`} className="focus:outline-none">
               {property.title_ar}
             </Link>
           </h3>
 
-          <p className="mt-1 line-clamp-1 text-xs text-[#4A555E]">
+          <p className="mt-1 line-clamp-1 text-xs text-[#5C5855]">
             {property.address_details_ar}
           </p>
         </div>

@@ -12,13 +12,13 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 const variantClasses: Record<ButtonVariant, string> = {
   primary:
-    'bg-[#131E26] text-[#FAF7F2] shadow-md hover:bg-[#1E2E3A] hover:shadow-lg focus-visible:outline-[#131E26]',
+    'bg-[#403E3D] text-[#FAF7F2] shadow-md hover:bg-[#2F2D2C] hover:shadow-lg focus-visible:outline-[#403E3D]',
   gold:
-    'bg-[#C59B4E] text-white shadow-md hover:bg-[#A67C33] hover:shadow-lg focus-visible:outline-[#C59B4E]',
+    'bg-[#9F7753] text-white shadow-md hover:bg-[#8A6346] hover:shadow-lg focus-visible:outline-[#9F7753]',
   outline:
-    'bg-white/80 backdrop-blur-md text-[#131E26] ring-1 ring-[#131E26]/15 hover:bg-[#131E26] hover:text-[#FAF7F2] focus-visible:outline-[#C59B4E]',
+    'bg-white/80 backdrop-blur-md text-[#403E3D] ring-1 ring-[#403E3D]/15 hover:bg-[#403E3D] hover:text-[#FAF7F2] focus-visible:outline-[#9F7753]',
   ghost:
-    'bg-transparent text-[#4A555E] hover:bg-[#F3EDE2]/80 hover:text-[#131E26] focus-visible:outline-[#C59B4E]',
+    'bg-transparent text-[#5C5855] hover:bg-[#F3EAD8]/80 hover:text-[#403E3D] focus-visible:outline-[#9F7753]',
   danger:
     'bg-red-700 text-white shadow-sm hover:bg-red-800 focus-visible:outline-red-700',
 };

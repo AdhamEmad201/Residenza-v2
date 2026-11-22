@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Container } from '@/components/layout/Container';
@@ -96,13 +97,25 @@ export default function RegisterPage() {
       <Container>
         <div className="mx-auto max-w-2xl rounded-3xl bg-white p-7 shadow-ambient-lg sm:p-11">
           <div>
-            <span className="inline-block rounded-full bg-[#F7EFE0] px-4 py-1 text-xs font-bold text-[#A67C33]">
-              انضم إلى مجتمع معلني ريزيدنزا سوهاج
-            </span>
-            <h1 className="mt-3 text-2xl font-extrabold text-[#131E26] sm:text-4xl">
+            <Link href="/" className="mb-4 inline-flex items-center">
+              <Image
+                src="/images/residenza-logo.svg"
+                alt="RESIDENZA"
+                width={154}
+                height={38}
+                priority
+                className="h-9 w-auto"
+              />
+            </Link>
+            <div className="mt-1">
+              <span className="inline-block rounded-full bg-[#F3EAD8] px-4 py-1 text-xs font-bold text-[#8A6346]">
+                انضم إلى مجتمع معلني ريزيدنزا سوهاج
+              </span>
+            </div>
+            <h1 className="mt-3 text-2xl font-extrabold text-[#403E3D] sm:text-4xl">
               إنشاء حساب معلن جديد
             </h1>
-            <p className="mt-2 text-xs leading-relaxed text-[#4A555E]">
+            <p className="mt-2 text-xs leading-relaxed text-[#5C5855]">
               حدد صفة الحساب بدقة لتظهر شارة المعلن الصحيحة على وحداتك المعتمدة في سوهاج.
             </p>
           </div>
@@ -119,8 +132,8 @@ export default function RegisterPage() {
           <form onSubmit={handleSubmit} className="mt-8 space-y-6" noValidate>
             {/* Step 1: Multi-Actor Pill Card Selector (D-08) */}
             <fieldset className="space-y-3">
-              <legend className="text-xs font-bold text-[#131E26]">
-                اختر صفة الحساب <span className="text-[#C59B4E]">*</span>
+              <legend className="text-xs font-bold text-[#403E3D]">
+                اختر صفة الحساب <span className="text-[#9F7753]">*</span>
               </legend>
 
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -134,30 +147,30 @@ export default function RegisterPage() {
                       aria-pressed={isSelected}
                       className={`cursor-pointer rounded-2xl p-4 text-start transition-all duration-300 ${
                         isSelected
-                          ? 'bg-[#131E26] text-white shadow-md scale-[1.01]'
-                          : 'bg-[#FAF7F2] text-[#131E26] hover:bg-[#F3EDE2]'
+                          ? 'bg-[#403E3D] text-white shadow-md scale-[1.01]'
+                          : 'bg-[#FAF7F2] text-[#403E3D] hover:bg-[#F3EAD8]'
                       }`}
                     >
                       <div className="flex items-center justify-between">
                         <span
                           className={`rounded-full px-2.5 py-0.5 text-[10px] font-bold ${
                             isSelected
-                              ? 'bg-[#C59B4E] text-white'
-                              : 'bg-white text-[#A67C33]'
+                              ? 'bg-[#9F7753] text-white'
+                              : 'bg-white text-[#8A6346]'
                           }`}
                         >
                           {option.code}
                         </span>
                         <span
                           className={`h-2.5 w-2.5 rounded-full ${
-                            isSelected ? 'bg-[#C59B4E]' : 'bg-transparent'
+                            isSelected ? 'bg-[#CEB38F]' : 'bg-transparent'
                           }`}
                         />
                       </div>
                       <p className="mt-3 text-xs font-extrabold">{option.title}</p>
                       <p
                         className={`mt-1 text-[11px] leading-relaxed ${
-                          isSelected ? 'text-white/80' : 'text-[#4A555E]'
+                          isSelected ? 'text-white/80' : 'text-[#5C5855]'
                         }`}
                       >
                         {option.subtitle}
@@ -175,7 +188,7 @@ export default function RegisterPage() {
 
             {/* Conditional Company / Brokerage Name */}
             {requiresCompanyName && (
-              <div className="rounded-2xl bg-[#F7EFE0]/65 p-5">
+              <div className="rounded-2xl bg-[#F3EAD8]/65 p-5">
                 <Input
                   label={
                     accountType === 'company'
@@ -274,11 +287,11 @@ export default function RegisterPage() {
             </div>
           </form>
 
-          <div className="mt-8 rounded-2xl bg-[#FAF7F2] p-4 text-center text-xs text-[#4A555E]">
+          <div className="mt-8 rounded-2xl bg-[#FAF7F2] p-4 text-center text-xs text-[#5C5855]">
             <span>تمتلك عضوية مسجلة بالفعل؟</span>{' '}
             <Link
               href="/login"
-              className="font-bold text-[#131E26] underline-offset-4 hover:underline"
+              className="font-bold text-[#403E3D] underline-offset-4 hover:underline"
             >
               تسجيل الدخول الآن
             </Link>
